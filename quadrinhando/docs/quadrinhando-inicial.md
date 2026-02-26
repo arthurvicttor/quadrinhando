@@ -17,8 +17,6 @@ Criar um produto digital que permita organizar e visualizar a sequência cronol�
 
 ## **3\. Restrições e Premissas**
 
-Liste explicitamente o que o produto NÃO pode assumir:
-
 \- Conectividade: Inicialmente online, mas pode ser adaptável para consultas offline simples no futuro.
 
 \- Infraestrutura: Funciona em desktop e mobile, mas foco inicial em web responsiva.
@@ -34,14 +32,6 @@ Liste explicitamente o que o produto NÃO pode assumir:
 \- Cadastro/Edição: Desenvolvedor / equipe do projeto
 
 \- Curadoria/Validação: Criador do projeto ( Arthur Victor de Sá Rodrigues)
-
-Exemplo:
-
-\- Consulta: qualquer morador
-
-\- Cadastro/Edição: agente comunitário
-
-\- Curadoria: ONG
 
 ## **5\. Atores (Alistair Cockburn)**
 
@@ -105,9 +95,7 @@ Template:
 
 Como leitor, quero consultar universos para entender a ordem cronológica das HQs.  
 Como leitor, quero acessar detalhes de uma HQ para saber volume, edição e link de compra.
-
 Como leitor, quero acessar detalhes de uma HQ para saber volume, edição e link de compra.
-
 Como desenvolvedor, quero criar a timeline de leitura para que a experiência seja clara e organizada.
 
 ## **8\. Escopo do MVP**
