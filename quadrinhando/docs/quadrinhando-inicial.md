@@ -59,6 +59,7 @@ Cenário principal:
 
 Extensões: Filtrar por personagem ou evento
 
+
 UC02 – Consultar Personagem
 
 Ator primário: Leitor de HQs
@@ -73,6 +74,7 @@ Cenário principal:
 2. Plataforma mostra a timeline do personagem, intercalando universos e eventos
 
 Extensões: Filtrar apenas por um universo específico
+
 
 UC03 – Consultar HQ Individual
 
