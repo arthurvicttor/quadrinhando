@@ -1,6 +1,7 @@
 // prisma/seed.js
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
+const bcrypt = require('bcryptjs')
 
 async function main() {
   console.log('Iniciando seed...')
@@ -217,6 +218,23 @@ async function main() {
     ],
   })
 
+ 
+
+
+  // --- Usuário Admin ---
+  const adminPassword = await bcrypt.hash('admin123', 10)
+  await prisma.user.upsert({
+    where: { email: 'admin@quadrinhando.com' },
+    update: {},
+    create: {
+      name: 'Admin',
+      email: 'admin@quadrinhando.com',
+      password: adminPassword,
+      role: 'ADMIN',
+    },
+  })
+  console.log('✅ Admin criado: admin@quadrinhando.com / admin123')
+
   console.log('Eventos e relações criadas')
   console.log('Seed concluído com sucesso!')
 }
@@ -228,4 +246,5 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect()
-  })
+  }
+)
