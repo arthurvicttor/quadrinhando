@@ -1,11 +1,20 @@
-const { Router } = require('express')
-const ctrl = require('../controllers/character.controller')
+const { Router } = require("express");
+const ctrl = require("../controllers/character.controller");
+const {
+  authenticate,
+  requireAdmin,
+} = require("../middlewares/auth.middleware");
 
-const router = Router()
+const router = Router();
 
-// Suporta ?search=nome
-router.get('/', ctrl.getAll)
-router.get('/:id', ctrl.getById)
-router.get('/:id/comics', ctrl.getComics)
+// Rotas públicas
+router.get("/", ctrl.getAll);
+router.get("/:id", ctrl.getById);
+router.get("/:id/comics", ctrl.getComics);
 
-module.exports = router
+// Rotas protegidas por autenticação e autorização de admin
+router.post("/", authenticate, requireAdmin, ctrl.create);
+router.put("/:id", authenticate, requireAdmin, ctrl.update);
+router.delete("/:id", authenticate, requireAdmin, ctrl.remove);
+
+module.exports = router;
