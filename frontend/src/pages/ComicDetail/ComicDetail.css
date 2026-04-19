@@ -1,0 +1,284 @@
+.comic-detail {
+  margin: -2rem -1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Banner */
+.comic-banner {
+  position: relative;
+  min-height: 320px;
+  display: flex;
+  align-items: flex-end;
+  padding: 2rem 1.5rem;
+  overflow: hidden;
+}
+
+.comic-banner-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse at 30% 50%,
+      rgba(230, 57, 70, 0.12) 0%,
+      transparent 60%
+    ),
+    linear-gradient(180deg, #0d0d0d 0%, #110808 100%);
+  z-index: 0;
+}
+
+.comic-banner-bg::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+}
+
+.comic-banner-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.comic-banner-cover {
+  width: 140px;
+  height: 210px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 2px solid var(--border);
+  background-color: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.comic-banner-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comic-banner-no-cover {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.comic-banner-no-cover span {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--primary);
+}
+
+.comic-banner-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.comic-banner-universe {
+  font-size: 0.8rem;
+  color: var(--primary);
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.comic-banner-universe:hover {
+  opacity: 0.8;
+}
+
+.comic-banner-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.comic-banner-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.comic-banner-meta span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+}
+
+.btn-buy {
+  display: inline-block;
+  background-color: var(--primary);
+  color: white;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+  margin-top: 0.25rem;
+  width: fit-content;
+}
+
+.btn-buy:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+/* Section */
+.comic-section {
+  padding: 0 1.5rem 2rem;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.section-count {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+}
+
+/* Characters scroll */
+.characters-scroll {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.characters-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.characters-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.characters-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 4px;
+}
+
+/* Character chip */
+.character-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 80px;
+  max-width: 80px;
+  transition: transform 0.2s;
+}
+
+.character-chip:hover {
+  transform: translateY(-3px);
+}
+
+.character-chip-image {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  background-color: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s;
+}
+
+.character-chip:hover .character-chip-image {
+  border-color: var(--primary);
+}
+
+.character-chip-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.character-chip-image span {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--primary);
+}
+
+.character-chip-name {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.error-msg {
+  color: var(--primary);
+  padding: 0 1.5rem;
+}
+
+/* Tablet+ */
+@media (min-width: 600px) {
+  .comic-banner {
+    min-height: 380px;
+    padding: 2.5rem 2rem;
+  }
+
+  .comic-banner-content {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 2rem;
+  }
+
+  .comic-banner-cover {
+    width: 160px;
+    height: 240px;
+  }
+
+  .comic-banner-title {
+    font-size: 2.2rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .comic-banner-title {
+    font-size: 2.8rem;
+  }
+
+  .comic-banner-cover {
+    width: 180px;
+    height: 270px;
+  }
+}
