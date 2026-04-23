@@ -9,7 +9,7 @@ function Home() {
         <div className="hero-content">
           <span className="hero-tag">Marvel • DC • e muito mais</span>
           <h1 className="hero-title">
-            Sua guia definitiva de <span>quadrinhos</span>
+            Seu guia definitivo de <span>quadrinhos</span>
           </h1>
           <p className="hero-subtitle">
             Descubra a ordem cronológica certa, conheça personagens e nunca mais
