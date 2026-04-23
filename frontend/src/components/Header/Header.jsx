@@ -31,7 +31,11 @@ function Header() {
         <div className="header-actions">
           {user ? (
             <>
-              {isAdmin && <span className="header-admin-badge">Admin</span>}
+              {isAdmin && (
+                <Link to="/admin" className="btn-admin" onClick={closeMenu}>
+                  Painel Administrativo
+                </Link>
+              )}
               <span className="header-username">{user.name}</span>
               <button className="btn-logout" onClick={handleLogout}>
                 Sair
