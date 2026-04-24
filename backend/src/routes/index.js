@@ -1,18 +1,20 @@
-const { Router } = require('express')
-const universeRoutes = require('./universe.routes')
-const characterRoutes = require('./character.routes')
-const comicRoutes = require('./comic.routes')
-const authRoutes = require('./auth.routes')
+const { Router } = require("express");
+const universeRoutes = require("./universe.routes");
+const characterRoutes = require("./character.routes");
+const comicRoutes = require("./comic.routes");
+const authRoutes = require("./auth.routes");
+const companyRoutes = require("./company.routes");
 
-const router = Router()
+const router = Router();
 
-router.use('/auth', authRoutes)
-router.use('/universes', universeRoutes)
-router.use('/characters', characterRoutes)
-router.use('/comics', comicRoutes)
+router.use("/auth", authRoutes);
+router.use("/universes", universeRoutes);
+router.use("/characters", characterRoutes);
+router.use("/comics", comicRoutes);
+router.use("/companies", companyRoutes);
 
-router.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
-})
+router.get("/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
 
-module.exports = router
+module.exports = router;
