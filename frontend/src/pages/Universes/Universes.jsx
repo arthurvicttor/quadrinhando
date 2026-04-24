@@ -24,6 +24,7 @@ function Universes() {
 
   useEffect(() => {
     const q = search.toLowerCase();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFiltered(
       universes.filter(
         (u) =>
