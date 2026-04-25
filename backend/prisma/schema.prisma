@@ -7,21 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum Role {
-  USER
-  ADMIN
-}
-
 model Company {
   id          Int        @id @default(autoincrement())
   name        String     @unique
@@ -35,34 +20,50 @@ model Company {
 model Universe {
   id          Int      @id @default(autoincrement())
   name        String
+  slug        String   @unique
   description String?
   startYear   Int?
   companyId   Int
   company     Company  @relation(fields: [companyId], references: [id])
-  comics      Comic[]
+  sagas       Saga[]
   events      Event[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
+model Saga {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  description String?
+  order       Int
+  universeId  Int
+  universe    Universe @relation(fields: [universeId], references: [id])
+  comics      Comic[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Comic {
-  id               Int              @id @default(autoincrement())
-  title            String
-  volume           Int?             @default(1)
-  issueNumber      Int?
-  universeId       Int
-  universe         Universe         @relation(fields: [universeId], references: [id])
-  orderInUniverse  Int
-  coverUrl         String?
-  officialBuyLink  String?
-  characters       ComicCharacter[]
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
+  id              Int              @id @default(autoincrement())
+  title           String
+  slug            String           @unique
+  volume          Int?             @default(1)
+  issueNumber     Int?
+  sagaId          Int
+  saga            Saga             @relation(fields: [sagaId], references: [id])
+  orderInSaga     Int
+  coverUrl        String?
+  officialBuyLink String?
+  characters      ComicCharacter[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model Character {
   id          Int              @id @default(autoincrement())
   name        String
+  slug        String           @unique
   description String?
   imageUrl    String?
   comics      ComicCharacter[]
@@ -71,12 +72,12 @@ model Character {
 }
 
 model ComicCharacter {
-  id               Int       @id @default(autoincrement())
-  comicId          Int
-  characterId      Int
-  appearanceOrder  Int       @default(0)
-  comic            Comic     @relation(fields: [comicId], references: [id])
-  character        Character @relation(fields: [characterId], references: [id])
+  id              Int       @id @default(autoincrement())
+  comicId         Int
+  characterId     Int
+  appearanceOrder Int       @default(0)
+  comic           Comic     @relation(fields: [comicId], references: [id])
+  character       Character @relation(fields: [characterId], references: [id])
 
   @@unique([comicId, characterId])
 }
@@ -89,4 +90,19 @@ model Event {
   universe    Universe? @relation(fields: [universeId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
 }
