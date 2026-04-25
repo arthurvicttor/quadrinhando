@@ -1,27 +1,36 @@
 const prisma = require("../config/database");
 const { AppError } = require("../middlewares/errorHandler");
+const slugify = require("../utils/slug");
 
 const findAll = async () => {
   return prisma.comic.findMany({
     include: {
-      universe: { select: { id: true, name: true } },
+      saga: {
+        include: { universe: { select: { id: true, name: true, slug: true } } },
+      },
       characters: {
-        include: { character: { select: { id: true, name: true } } },
+        include: {
+          character: { select: { id: true, name: true, slug: true } },
+        },
         orderBy: { appearanceOrder: "asc" },
       },
     },
-    orderBy: { orderInUniverse: "asc" },
+    orderBy: { orderInSaga: "asc" },
   });
 };
 
-const findById = async (id) => {
+const findBySlug = async (slug) => {
   const comic = await prisma.comic.findUnique({
-    where: { id },
+    where: { slug },
     include: {
-      universe: { select: { id: true, name: true } },
+      saga: {
+        include: { universe: { select: { id: true, name: true, slug: true } } },
+      },
       characters: {
         include: {
-          character: { select: { id: true, name: true, imageUrl: true } },
+          character: {
+            select: { id: true, name: true, slug: true, imageUrl: true },
+          },
         },
         orderBy: { appearanceOrder: "asc" },
       },
@@ -36,33 +45,30 @@ const create = async ({
   title,
   volume,
   issueNumber,
-  universeId,
-  orderInUniverse,
+  sagaId,
+  orderInSaga,
   coverUrl,
   officialBuyLink,
   characters,
 }) => {
-  if (!title || !universeId || orderInUniverse === undefined)
-    throw new AppError(
-      "title, universeId e orderInUniverse são obrigatórios.",
-      400,
-    );
+  if (!title || !sagaId || orderInSaga === undefined)
+    throw new AppError("title, sagaId e orderInSaga são obrigatórios.", 400);
 
-  const universe = await prisma.universe.findUnique({
-    where: { id: universeId },
-  });
-  if (!universe) throw new AppError("Universo não encontrado.", 404);
+  const saga = await prisma.saga.findUnique({ where: { id: sagaId } });
+  if (!saga) throw new AppError("Saga não encontrada.", 404);
 
-  const comic = await prisma.comic.create({
+  const slug = slugify(`${title} ${issueNumber || orderInSaga}`);
+
+  return prisma.comic.create({
     data: {
       title,
+      slug,
       volume: volume ?? 1,
       issueNumber,
-      universeId,
-      orderInUniverse,
+      sagaId,
+      orderInSaga,
       coverUrl,
       officialBuyLink,
-      // Cria as relações com personagens se enviados
       characters: characters?.length
         ? {
             create: characters.map((c) => ({
@@ -73,15 +79,17 @@ const create = async ({
         : undefined,
     },
     include: {
-      universe: { select: { id: true, name: true } },
+      saga: {
+        include: { universe: { select: { id: true, name: true, slug: true } } },
+      },
       characters: {
-        include: { character: { select: { id: true, name: true } } },
+        include: {
+          character: { select: { id: true, name: true, slug: true } },
+        },
         orderBy: { appearanceOrder: "asc" },
       },
     },
   });
-
-  return comic;
 };
 
 const update = async (
@@ -90,36 +98,44 @@ const update = async (
     title,
     volume,
     issueNumber,
-    universeId,
-    orderInUniverse,
+    sagaId,
+    orderInSaga,
     coverUrl,
     officialBuyLink,
   },
 ) => {
-  await findById(id);
+  const comic = await prisma.comic.findUnique({ where: { id } });
+  if (!comic) throw new AppError("HQ não encontrada.", 404);
 
-  if (universeId) {
-    const universe = await prisma.universe.findUnique({
-      where: { id: universeId },
-    });
-    if (!universe) throw new AppError("Universo não encontrado.", 404);
+  if (sagaId) {
+    const saga = await prisma.saga.findUnique({ where: { id: sagaId } });
+    if (!saga) throw new AppError("Saga não encontrada.", 404);
   }
+
+  const slug = title
+    ? slugify(`${title} ${issueNumber || orderInSaga || comic.orderInSaga}`)
+    : comic.slug;
 
   return prisma.comic.update({
     where: { id },
     data: {
       title,
+      slug,
       volume,
       issueNumber,
-      universeId,
-      orderInUniverse,
+      sagaId,
+      orderInSaga,
       coverUrl,
       officialBuyLink,
     },
     include: {
-      universe: { select: { id: true, name: true } },
+      saga: {
+        include: { universe: { select: { id: true, name: true, slug: true } } },
+      },
       characters: {
-        include: { character: { select: { id: true, name: true } } },
+        include: {
+          character: { select: { id: true, name: true, slug: true } },
+        },
         orderBy: { appearanceOrder: "asc" },
       },
     },
@@ -127,13 +143,12 @@ const update = async (
 };
 
 const remove = async (id) => {
-  await findById(id);
+  const comic = await prisma.comic.findUnique({ where: { id } });
+  if (!comic) throw new AppError("HQ não encontrada.", 404);
 
-  // Remove as relações antes de deletar
   await prisma.comicCharacter.deleteMany({ where: { comicId: id } });
   await prisma.comic.delete({ where: { id } });
-
   return { message: "HQ excluída com sucesso." };
 };
 
-module.exports = { findAll, findById, create, update, remove };
+module.exports = { findAll, findBySlug, create, update, remove };

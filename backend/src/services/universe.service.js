@@ -1,33 +1,28 @@
 const prisma = require("../config/database");
 const { AppError } = require("../middlewares/errorHandler");
+const slugify = require("../utils/slug");
 
 const findAll = async () => {
   return prisma.universe.findMany({
     include: {
-      company: {
-        select: { id: true, name: true, logoUrl: true },
-      },
-      _count: {
-        select: { comics: true, events: true },
-      },
+      company: { select: { id: true, name: true, logoUrl: true } },
+      _count: { select: { sagas: true } },
     },
     orderBy: { startYear: "asc" },
   });
 };
 
-const findById = async (id) => {
+const findBySlug = async (slug) => {
   const universe = await prisma.universe.findUnique({
-    where: { id },
+    where: { slug },
     include: {
-      company: {
-        select: { id: true, name: true, logoUrl: true },
-      },
-      events: {
-        select: { id: true, name: true, description: true },
-        orderBy: { id: "asc" },
-      },
-      _count: {
-        select: { comics: true },
+      company: { select: { id: true, name: true, logoUrl: true } },
+      events: { select: { id: true, name: true, description: true } },
+      sagas: {
+        orderBy: { order: "asc" },
+        include: {
+          _count: { select: { comics: true } },
+        },
       },
     },
   });
@@ -36,41 +31,46 @@ const findById = async (id) => {
   return universe;
 };
 
-const findComicsByUniverse = async (id) => {
-  // Garante que o universo existe
-  const universe = await prisma.universe.findUnique({ where: { id } });
+const findSagasByUniverse = async (slug) => {
+  const universe = await prisma.universe.findUnique({ where: { slug } });
   if (!universe) throw new AppError("Universo não encontrado.", 404);
 
-  const comics = await prisma.comic.findMany({
-    where: { universeId: id },
+  return prisma.saga.findMany({
+    where: { universeId: universe.id },
+    orderBy: { order: "asc" },
     include: {
-      characters: {
+      comics: {
+        orderBy: { orderInSaga: "asc" },
         include: {
-          character: {
-            select: { id: true, name: true, imageUrl: true },
+          characters: {
+            include: {
+              character: {
+                select: { id: true, name: true, slug: true, imageUrl: true },
+              },
+            },
+            orderBy: { appearanceOrder: "asc" },
           },
         },
-        orderBy: { appearanceOrder: "asc" },
       },
     },
-    orderBy: { orderInUniverse: "asc" },
   });
-
-  return { universe: { id: universe.id, name: universe.name }, comics };
 };
 
 const create = async ({ name, description, startYear, companyId }) => {
   const company = await prisma.company.findUnique({ where: { id: companyId } });
   if (!company) throw new AppError("Empresa não encontrada.", 404);
 
+  const slug = slugify(name);
+
   return prisma.universe.create({
-    data: { name, description, startYear, companyId },
+    data: { name, slug, description, startYear, companyId },
     include: { company: { select: { id: true, name: true } } },
   });
 };
 
 const update = async (id, { name, description, startYear, companyId }) => {
-  await findById(id); // Lança 404 se não existir
+  const universe = await prisma.universe.findUnique({ where: { id } });
+  if (!universe) throw new AppError("Universo não encontrado.", 404);
 
   if (companyId) {
     const company = await prisma.company.findUnique({
@@ -79,20 +79,23 @@ const update = async (id, { name, description, startYear, companyId }) => {
     if (!company) throw new AppError("Empresa não encontrada.", 404);
   }
 
+  const slug = name ? slugify(name) : universe.slug;
+
   return prisma.universe.update({
     where: { id },
-    data: { name, description, startYear, companyId },
+    data: { name, slug, description, startYear, companyId },
     include: { company: { select: { id: true, name: true } } },
   });
 };
 
 const remove = async (id) => {
-  await findById(id);
+  const universe = await prisma.universe.findUnique({ where: { id } });
+  if (!universe) throw new AppError("Universo não encontrado.", 404);
 
-  const hasComics = await prisma.comic.count({ where: { universeId: id } });
-  if (hasComics)
+  const hasSagas = await prisma.saga.count({ where: { universeId: id } });
+  if (hasSagas)
     throw new AppError(
-      "Não é possível excluir um universo que possui HQs.",
+      "Não é possível excluir um universo que possui sagas.",
       409,
     );
 
@@ -102,8 +105,8 @@ const remove = async (id) => {
 
 module.exports = {
   findAll,
-  findById,
-  findComicsByUniverse,
+  findBySlug,
+  findSagasByUniverse,
   create,
   update,
   remove,
