@@ -9,12 +9,9 @@ const getAll = async (req, res, next) => {
   }
 };
 
-const getById = async (req, res, next) => {
+const getBySlug = async (req, res, next) => {
   try {
-    const id = Number(req.params.id);
-    if (isNaN(id))
-      return res.status(400).json({ status: "error", message: "ID inválido." });
-    const comic = await comicService.findById(id);
+    const comic = await comicService.findBySlug(req.params.slug);
     res.json({ status: "success", data: comic });
   } catch (err) {
     next(err);
@@ -27,25 +24,26 @@ const create = async (req, res, next) => {
       title,
       volume,
       issueNumber,
-      universeId,
-      orderInUniverse,
+      sagaId,
+      orderInSaga,
       coverUrl,
       officialBuyLink,
       characters,
     } = req.body;
-
-    if (!title || !universeId || orderInUniverse === undefined)
-      return res.status(400).json({
-        status: "error",
-        message: "title, universeId e orderInUniverse são obrigatórios.",
-      });
+    if (!title || !sagaId || orderInSaga === undefined)
+      return res
+        .status(400)
+        .json({
+          status: "error",
+          message: "title, sagaId e orderInSaga são obrigatórios.",
+        });
 
     const comic = await comicService.create({
       title,
       volume: volume ? Number(volume) : 1,
       issueNumber: issueNumber ? Number(issueNumber) : null,
-      universeId: Number(universeId),
-      orderInUniverse: Number(orderInUniverse),
+      sagaId: Number(sagaId),
+      orderInSaga: Number(orderInSaga),
       coverUrl,
       officialBuyLink,
       characters,
@@ -61,23 +59,21 @@ const update = async (req, res, next) => {
     const id = Number(req.params.id);
     if (isNaN(id))
       return res.status(400).json({ status: "error", message: "ID inválido." });
-
     const {
       title,
       volume,
       issueNumber,
-      universeId,
-      orderInUniverse,
+      sagaId,
+      orderInSaga,
       coverUrl,
       officialBuyLink,
     } = req.body;
-
     const comic = await comicService.update(id, {
       title,
       volume: volume ? Number(volume) : undefined,
       issueNumber: issueNumber ? Number(issueNumber) : undefined,
-      universeId: universeId ? Number(universeId) : undefined,
-      orderInUniverse: orderInUniverse ? Number(orderInUniverse) : undefined,
+      sagaId: sagaId ? Number(sagaId) : undefined,
+      orderInSaga: orderInSaga ? Number(orderInSaga) : undefined,
       coverUrl,
       officialBuyLink,
     });
@@ -92,7 +88,6 @@ const remove = async (req, res, next) => {
     const id = Number(req.params.id);
     if (isNaN(id))
       return res.status(400).json({ status: "error", message: "ID inválido." });
-
     const result = await comicService.remove(id);
     res.json({ status: "success", data: result });
   } catch (err) {
@@ -100,4 +95,4 @@ const remove = async (req, res, next) => {
   }
 };
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = { getAll, getBySlug, create, update, remove };

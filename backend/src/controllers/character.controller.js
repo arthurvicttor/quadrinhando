@@ -10,12 +10,9 @@ const getAll = async (req, res, next) => {
   }
 };
 
-const getById = async (req, res, next) => {
+const getBySlug = async (req, res, next) => {
   try {
-    const id = Number(req.params.id);
-    if (isNaN(id))
-      return res.status(400).json({ status: "error", message: "ID inválido." });
-    const character = await characterService.findById(id);
+    const character = await characterService.findBySlug(req.params.slug);
     res.json({ status: "success", data: character });
   } catch (err) {
     next(err);
@@ -24,10 +21,7 @@ const getById = async (req, res, next) => {
 
 const getComics = async (req, res, next) => {
   try {
-    const id = Number(req.params.id);
-    if (isNaN(id))
-      return res.status(400).json({ status: "error", message: "ID inválido." });
-    const data = await characterService.findComicsByCharacter(id);
+    const data = await characterService.findComicsByCharacter(req.params.slug);
     res.json({ status: "success", data });
   } catch (err) {
     next(err);
@@ -41,7 +35,6 @@ const create = async (req, res, next) => {
       return res
         .status(400)
         .json({ status: "error", message: "name é obrigatório." });
-
     const character = await characterService.create({
       name,
       description,
@@ -58,7 +51,6 @@ const update = async (req, res, next) => {
     const id = Number(req.params.id);
     if (isNaN(id))
       return res.status(400).json({ status: "error", message: "ID inválido." });
-
     const { name, description, imageUrl } = req.body;
     const character = await characterService.update(id, {
       name,
@@ -76,7 +68,6 @@ const remove = async (req, res, next) => {
     const id = Number(req.params.id);
     if (isNaN(id))
       return res.status(400).json({ status: "error", message: "ID inválido." });
-
     const result = await characterService.remove(id);
     res.json({ status: "success", data: result });
   } catch (err) {
@@ -84,4 +75,4 @@ const remove = async (req, res, next) => {
   }
 };
 
-module.exports = { getAll, getById, getComics, create, update, remove };
+module.exports = { getAll, getBySlug, getComics, create, update, remove };
