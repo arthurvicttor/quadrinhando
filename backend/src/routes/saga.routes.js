@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const ctrl = require("../controllers/comic.controller");
+const ctrl = require("../controllers/saga.controller");
 const {
   authenticate,
   requireAdmin,
@@ -8,7 +8,6 @@ const {
 const router = Router();
 
 // Rotas públicas
-router.get("/", ctrl.getAll);
 router.get("/:slug", ctrl.getBySlug);
 
 // Rotas protegidas por autenticação e autorização de admin

@@ -9,8 +9,8 @@ const router = Router();
 
 // Rotas públicas
 router.get("/", ctrl.getAll);
-router.get("/:id", ctrl.getById);
-router.get("/:id/comics", ctrl.getComics);
+router.get("/:slug", ctrl.getBySlug);
+router.get("/:slug/comics", ctrl.getComics);
 
 // Rotas protegidas por autenticação e autorização de admin
 router.post("/", authenticate, requireAdmin, ctrl.create);
