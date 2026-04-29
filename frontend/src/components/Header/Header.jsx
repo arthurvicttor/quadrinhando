@@ -19,24 +19,23 @@ function Header() {
   return (
     <header className="header">
       <div className="header-inner">
-        <Link to="/" className="header-logo">
+        <Link to="/" className="header-logo" onClick={closeMenu}>
           Quadrinhando
         </Link>
 
         <nav className="header-nav">
-          <Link to="/universes">Universos</Link>
-          <Link to="/characters">Personagens</Link>
+          <Link to="/universos">Universos</Link>
+          <Link to="/personagens">Personagens</Link>
         </nav>
 
         <div className="header-actions">
           {user ? (
             <>
               {isAdmin && (
-                <Link to="/admin" className="btn-admin" onClick={closeMenu}>
-                  Painel Administrativo
+                <Link to="/admin" className="btn-admin">
+                  Painel
                 </Link>
               )}
-              <span className="header-username">{user.name}</span>
               <button className="btn-logout" onClick={handleLogout}>
                 Sair
               </button>
@@ -48,7 +47,6 @@ function Header() {
           )}
         </div>
 
-        {/* Menu Hamburger */}
         <button
           className={`hamburger ${menuOpen ? "open" : ""}`}
           onClick={() => setMenuOpen(!menuOpen)}
@@ -60,22 +58,23 @@ function Header() {
         </button>
       </div>
 
-      {/* Mobile menu */}
       <div className={`mobile-menu ${menuOpen ? "active" : ""}`}>
         <nav className="mobile-nav">
-          <Link to="/universes" onClick={closeMenu}>
+          <Link to="/universos" onClick={closeMenu}>
             Universos
           </Link>
-          <Link to="/characters" onClick={closeMenu}>
+          <Link to="/personagens" onClick={closeMenu}>
             Personagens
           </Link>
         </nav>
-
         <div className="mobile-actions">
           {user ? (
             <>
-              {isAdmin && <span className="header-admin-badge">Admin</span>}
-              <span className="header-username">{user.name}</span>
+              {isAdmin && (
+                <Link to="/admin" className="btn-admin" onClick={closeMenu}>
+                  Painel
+                </Link>
+              )}
               <button className="btn-logout" onClick={handleLogout}>
                 Sair
               </button>
