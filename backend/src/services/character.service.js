@@ -39,7 +39,11 @@ const findComicsByCharacter = async (slug) => {
         },
       },
     },
-    orderBy: { appearanceOrder: "asc" },
+    orderBy: [
+      { comic: { saga: { universe: { startYear: "asc" } } } },
+      { comic: { saga: { order: "asc" } } },
+      { comic: { orderInSaga: "asc" } },
+    ],
   });
 
   const comics = comicRelations.map((rel) => ({

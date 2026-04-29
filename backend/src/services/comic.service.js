@@ -102,6 +102,7 @@ const update = async (
     orderInSaga,
     coverUrl,
     officialBuyLink,
+    characters,
   },
 ) => {
   const comic = await prisma.comic.findUnique({ where: { id } });
@@ -116,6 +117,10 @@ const update = async (
     ? slugify(`${title} ${issueNumber || orderInSaga || comic.orderInSaga}`)
     : comic.slug;
 
+  if (characters !== undefined) {
+    await prisma.comicCharacter.deleteMany({ where: { comicId: id } });
+  }
+
   return prisma.comic.update({
     where: { id },
     data: {
@@ -127,6 +132,16 @@ const update = async (
       orderInSaga,
       coverUrl,
       officialBuyLink,
+      ...(characters !== undefined && {
+        characters: {
+          create: characters
+            .filter((c) => c.characterId)
+            .map((c) => ({
+              characterId: c.characterId,
+              appearanceOrder: c.appearanceOrder ?? 0,
+            })),
+        },
+      }),
     },
     include: {
       saga: {
