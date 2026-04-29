@@ -31,12 +31,10 @@ const create = async (req, res, next) => {
       characters,
     } = req.body;
     if (!title || !sagaId || orderInSaga === undefined)
-      return res
-        .status(400)
-        .json({
-          status: "error",
-          message: "title, sagaId e orderInSaga são obrigatórios.",
-        });
+      return res.status(400).json({
+        status: "error",
+        message: "title, sagaId e orderInSaga são obrigatórios.",
+      });
 
     const comic = await comicService.create({
       title,
@@ -59,6 +57,7 @@ const update = async (req, res, next) => {
     const id = Number(req.params.id);
     if (isNaN(id))
       return res.status(400).json({ status: "error", message: "ID inválido." });
+
     const {
       title,
       volume,
@@ -67,7 +66,9 @@ const update = async (req, res, next) => {
       orderInSaga,
       coverUrl,
       officialBuyLink,
+      characters,
     } = req.body;
+
     const comic = await comicService.update(id, {
       title,
       volume: volume ? Number(volume) : undefined,
@@ -76,6 +77,7 @@ const update = async (req, res, next) => {
       orderInSaga: orderInSaga ? Number(orderInSaga) : undefined,
       coverUrl,
       officialBuyLink,
+      characters,
     });
     res.json({ status: "success", data: comic });
   } catch (err) {
