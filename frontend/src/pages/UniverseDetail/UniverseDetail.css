@@ -5,6 +5,7 @@
   gap: 2rem;
 }
 
+/* Banner */
 .universe-banner {
   position: relative;
   min-height: 280px;
@@ -20,7 +21,7 @@
   background:
     radial-gradient(
       ellipse at 20% 50%,
-      rgba(230, 57, 70, 0.12) 0%,
+      rgba(230, 57, 70, 0.15) 0%,
       transparent 60%
     ),
     linear-gradient(180deg, #0d0d0d 0%, #110808 100%);
@@ -48,6 +49,7 @@
 
 .universe-banner-logo {
   width: 80px;
+  height: 80px;
   object-fit: contain;
   filter: brightness(0.9);
 }
@@ -88,8 +90,13 @@
   margin-top: 0.25rem;
 }
 
+/* Sections */
 .universe-section {
   padding: 0 1.5rem;
+}
+
+.universe-section:last-child {
+  padding-bottom: 2rem;
 }
 
 .section-header {
@@ -106,6 +113,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .section-count {
@@ -118,10 +126,12 @@
   border-radius: 20px;
 }
 
+/* Eventos */
 .events-list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .event-tag {
@@ -133,112 +143,82 @@
   border-radius: 20px;
 }
 
-/* Comics scroll horizontal */
-.comics-scroll {
-  display: flex;
-  gap: 0.75rem;
-  overflow-x: auto;
-  padding-bottom: 1rem;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
-}
-
-.comics-scroll::-webkit-scrollbar {
-  height: 4px;
-}
-
-.comics-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.comics-scroll::-webkit-scrollbar-thumb {
-  background-color: var(--border);
-  border-radius: 4px;
-}
-
-.comic-card {
+/* Sagas */
+.sagas-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  min-width: 130px;
-  max-width: 130px;
-  transition: transform 0.2s;
+  gap: 0.75rem;
 }
 
-.comic-card:hover {
-  transform: translateY(-4px);
-}
-
-.comic-card-cover {
-  position: relative;
-  width: 130px;
-  height: 195px;
-  border-radius: var(--radius);
-  overflow: hidden;
+.saga-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border);
-}
-
-.comic-card-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s;
-}
-
-.comic-card:hover .comic-card-cover img {
-  transform: scale(1.05);
-}
-
-.comic-card-no-cover {
-  width: 100%;
-  height: 100%;
+  border-radius: var(--radius);
+  padding: 1.25rem;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 1rem;
+  transition:
+    border-color 0.2s,
+    transform 0.2s;
 }
 
-.comic-card-no-cover span {
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: var(--primary);
+.saga-card:hover {
+  border-color: var(--primary);
+  transform: translateX(4px);
 }
 
-.comic-card-order {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  background-color: var(--primary);
-  color: white;
-  font-size: 0.7rem;
-  font-weight: 700;
-  width: 22px;
-  height: 22px;
+.saga-card-order {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
+  background-color: rgba(230, 57, 70, 0.1);
+  border: 1px solid rgba(230, 57, 70, 0.3);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
-.comic-card-info {
+.saga-card-info {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.25rem;
 }
 
-.comic-card-title {
-  font-size: 0.8rem;
-  font-weight: 600;
+.saga-card-name {
+  font-size: 1rem;
+  font-weight: 700;
   color: var(--text);
-  line-height: 1.3;
+}
+
+.saga-card-desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.4;
   display: -webkit-box;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.comic-card-issue {
-  font-size: 0.75rem;
+.saga-card-count {
+  font-size: 0.78rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.saga-card-arrow {
   color: var(--text-muted);
+  transition: color 0.2s;
+}
+
+.saga-card:hover .saga-card-arrow {
+  color: var(--primary);
 }
 
 .error-msg {
@@ -251,6 +231,7 @@
   font-size: 0.9rem;
 }
 
+/* Tablet+ */
 @media (min-width: 600px) {
   .universe-banner {
     min-height: 340px;
@@ -265,35 +246,17 @@
 
   .universe-banner-logo {
     width: 100px;
+    height: 100px;
   }
 
   .universe-banner-title {
     font-size: 2.2rem;
   }
-
-  .comic-card {
-    min-width: 150px;
-    max-width: 150px;
-  }
-
-  .comic-card-cover {
-    width: 150px;
-    height: 225px;
-  }
 }
 
+/* Desktop */
 @media (min-width: 768px) {
   .universe-banner-title {
     font-size: 2.8rem;
-  }
-
-  .comic-card {
-    min-width: 170px;
-    max-width: 170px;
-  }
-
-  .comic-card-cover {
-    width: 170px;
-    height: 255px;
   }
 }

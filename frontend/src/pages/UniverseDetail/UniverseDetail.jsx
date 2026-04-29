@@ -5,24 +5,24 @@ import Loading from "../../components/Loading/Loading";
 import "./UniverseDetail.css";
 
 function UniverseDetail() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [universe, setUniverse] = useState(null);
-  const [comics, setComics] = useState([]);
+  const [sagas, setSagas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     Promise.all([
-      api.get(`/universes/${id}`),
-      api.get(`/universes/${id}/comics`),
+      api.get(`/universes/${slug}`),
+      api.get(`/universes/${slug}/sagas`),
     ])
-      .then(([universeRes, comicsRes]) => {
+      .then(([universeRes, sagasRes]) => {
         setUniverse(universeRes.data.data);
-        setComics(comicsRes.data.data.comics);
+        setSagas(sagasRes.data.data);
       })
       .catch(() => setError("Erro ao carregar universo."))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [slug]);
 
   if (loading) return <Loading text="Carregando universo..." />;
   if (error) return <p className="error-msg">{error}</p>;
@@ -30,7 +30,6 @@ function UniverseDetail() {
 
   return (
     <div className="universe-detail">
-      {/* Banner */}
       <div className="universe-banner">
         <div className="universe-banner-bg" />
         <div className="universe-banner-content">
@@ -49,13 +48,12 @@ function UniverseDetail() {
             <p className="universe-banner-desc">{universe.description}</p>
             <div className="universe-banner-meta">
               {universe.startYear && <span>Desde {universe.startYear}</span>}
-              <span>{universe._count?.comics} HQs</span>
+              <span>{universe._count?.sagas} sagas</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Eventos */}
       {universe.events?.length > 0 && (
         <div className="universe-section">
           <h2 className="section-title">Eventos</h2>
@@ -69,43 +67,33 @@ function UniverseDetail() {
         </div>
       )}
 
-      {/* HQs - scroll horizontal */}
       <div className="universe-section">
-        <div className="section-header">
-          <h2 className="section-title">
-            Ordem de Leitura
-            <span className="section-count">{comics.length} HQs</span>
-          </h2>
-        </div>
+        <h2 className="section-title">
+          Sagas
+          <span className="section-count">{sagas.length} sagas</span>
+        </h2>
 
-        {comics.length === 0 ? (
-          <p className="empty-msg">Nenhuma HQ cadastrada neste universo.</p>
+        {sagas.length === 0 ? (
+          <p className="empty-msg">Nenhuma saga cadastrada neste universo.</p>
         ) : (
-          <div className="comics-scroll">
-            {comics.map((comic, index) => (
+          <div className="sagas-list">
+            {sagas.map((saga, index) => (
               <Link
-                to={`/comics/${comic.id}`}
-                key={comic.id}
-                className="comic-card"
+                to={`/universos/${slug}/sagas/${saga.slug}`}
+                key={saga.id}
+                className="saga-card"
               >
-                <div className="comic-card-cover">
-                  {comic.coverUrl ? (
-                    <img src={comic.coverUrl} alt={comic.title} />
-                  ) : (
-                    <div className="comic-card-no-cover">
-                      <span>#{comic.orderInUniverse}</span>
-                    </div>
+                <div className="saga-card-order">{index + 1}</div>
+                <div className="saga-card-info">
+                  <h3 className="saga-card-name">{saga.name}</h3>
+                  {saga.description && (
+                    <p className="saga-card-desc">{saga.description}</p>
                   )}
-                  <div className="comic-card-order">{index + 1}</div>
+                  <span className="saga-card-count">
+                    {saga._count?.comics} HQs
+                  </span>
                 </div>
-                <div className="comic-card-info">
-                  <p className="comic-card-title">{comic.title}</p>
-                  {comic.issueNumber && (
-                    <p className="comic-card-issue">
-                      Vol.{comic.volume} #{comic.issueNumber}
-                    </p>
-                  )}
-                </div>
+                <span className="saga-card-arrow">→</span>
               </Link>
             ))}
           </div>

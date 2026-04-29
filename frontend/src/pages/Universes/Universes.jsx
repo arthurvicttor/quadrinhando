@@ -62,7 +62,7 @@ function Universes() {
       <div className="universes-grid">
         {filtered.map((universe) => (
           <Link
-            to={`/universes/${universe.id}`}
+            to={`/universos/${universe.slug}`}
             key={universe.id}
             className="universe-card"
           >
