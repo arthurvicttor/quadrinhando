@@ -5,18 +5,18 @@ import Loading from "../../components/Loading/Loading";
 import "./ComicDetail.css";
 
 function ComicDetail() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [comic, setComic] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     api
-      .get(`/comics/${id}`)
+      .get(`/comics/${slug}`)
       .then((res) => setComic(res.data.data))
       .catch(() => setError("Erro ao carregar HQ."))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [slug]);
 
   if (loading) return <Loading text="Carregando HQ..." />;
   if (error) return <p className="error-msg">{error}</p>;
@@ -40,10 +40,10 @@ function ComicDetail() {
           <div className="comic-banner-info">
             {comic.universe && (
               <Link
-                to={`/universes/${comic.universe.id}`}
+                to={`/universos/${comic.saga?.universe?.slug}`}
                 className="comic-banner-universe"
               >
-                ← {comic.universe.name}
+                ← {comic.saga?.universe?.name}
               </Link>
             )}
             <h1 className="comic-banner-title">{comic.title}</h1>
@@ -77,7 +77,7 @@ function ComicDetail() {
           <div className="characters-scroll">
             {comic.characters.map((rel) => (
               <Link
-                to={`/characters/${rel.character.id}`}
+                to={`/personagens/${rel.character.slug}`}
                 key={rel.character.id}
                 className="character-chip"
               >

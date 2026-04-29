@@ -5,7 +5,7 @@ import Loading from "../../components/Loading/Loading";
 import "./CharacterDetail.css";
 
 function CharacterDetail() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [character, setCharacter] = useState(null);
   const [comics, setComics] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,8 +13,8 @@ function CharacterDetail() {
 
   useEffect(() => {
     Promise.all([
-      api.get(`/characters/${id}`),
-      api.get(`/characters/${id}/comics`),
+      api.get(`/characters/${slug}`),
+      api.get(`/characters/${slug}/comics`),
     ])
       .then(([characterRes, comicsRes]) => {
         setCharacter(characterRes.data.data);
@@ -22,7 +22,7 @@ function CharacterDetail() {
       })
       .catch(() => setError("Erro ao carregar personagem."))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [slug]);
 
   if (loading) return <Loading text="Carregando personagem..." />;
   if (error) return <p className="error-msg">{error}</p>;
@@ -70,7 +70,7 @@ function CharacterDetail() {
           <div className="comics-scroll">
             {comics.map((comic, index) => (
               <Link
-                to={`/comics/${comic.id}`}
+                to={`/hqs/${comic.slug}`}
                 key={comic.id}
                 className="comic-card"
               >

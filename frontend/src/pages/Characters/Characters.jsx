@@ -24,6 +24,7 @@ function Characters() {
 
   useEffect(() => {
     const q = search.toLowerCase();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFiltered(characters.filter((c) => c.name.toLowerCase().includes(q)));
   }, [search, characters]);
 
@@ -56,7 +57,7 @@ function Characters() {
       <div className="characters-grid">
         {filtered.map((character) => (
           <Link
-            to={`/characters/${character.id}`}
+            to={`/personagens/${character.slug}`}
             key={character.id}
             className="character-card"
           >
