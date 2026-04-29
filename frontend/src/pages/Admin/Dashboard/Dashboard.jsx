@@ -13,7 +13,7 @@ function Dashboard() {
       </div>
 
       <div className="dashboard-grid">
-        <Link to="/admin/universes" className="dashboard-card">
+        <Link to="/admin/universos" className="dashboard-card">
           <span className="dashboard-card-icon">🌌</span>
           <div className="dashboard-card-info">
             <h2>Universos</h2>
@@ -22,7 +22,16 @@ function Dashboard() {
           <span className="dashboard-card-arrow">→</span>
         </Link>
 
-        <Link to="/admin/characters" className="dashboard-card">
+        <Link to="/admin/sagas" className="dashboard-card">
+          <span className="dashboard-card-icon">📖</span>
+          <div className="dashboard-card-info">
+            <h2>Sagas</h2>
+            <p>Criar, editar e excluir sagas</p>
+          </div>
+          <span className="dashboard-card-arrow">→</span>
+        </Link>
+
+        <Link to="/admin/personagens" className="dashboard-card">
           <span className="dashboard-card-icon">🦸</span>
           <div className="dashboard-card-info">
             <h2>Personagens</h2>
@@ -31,7 +40,7 @@ function Dashboard() {
           <span className="dashboard-card-arrow">→</span>
         </Link>
 
-        <Link to="/admin/comics" className="dashboard-card">
+        <Link to="/admin/hqs" className="dashboard-card">
           <span className="dashboard-card-icon">📚</span>
           <div className="dashboard-card-info">
             <h2>HQs</h2>

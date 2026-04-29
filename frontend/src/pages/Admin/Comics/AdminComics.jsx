@@ -6,7 +6,7 @@ import "./AdminComics.css";
 
 function AdminComics() {
   const [comics, setComics] = useState([]);
-  const [universes, setUniverses] = useState([]);
+  const [sagas, setSagas] = useState([]);
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -17,8 +17,8 @@ function AdminComics() {
     title: "",
     volume: "1",
     issueNumber: "",
-    universeId: "",
-    orderInUniverse: "",
+    sagaId: "",
+    orderInSaga: "",
     coverUrl: "",
     officialBuyLink: "",
     characters: [],
@@ -36,8 +36,16 @@ function AdminComics() {
         api.get("/characters"),
       ]);
       setComics(comicsRes.data.data);
-      setUniverses(universesRes.data.data);
       setCharacters(charactersRes.data.data);
+
+      const sagasAll = [];
+      for (const u of universesRes.data.data) {
+        const res = await api.get(`/universes/${u.slug}/sagas`);
+        res.data.data.forEach((s) =>
+          sagasAll.push({ ...s, universeName: u.name }),
+        );
+      }
+      setSagas(sagasAll);
     } catch {
       setError("Erro ao carregar dados.");
     } finally {
@@ -51,8 +59,8 @@ function AdminComics() {
       title: comic.title,
       volume: comic.volume || "1",
       issueNumber: comic.issueNumber || "",
-      universeId: comic.universe?.id || "",
-      orderInUniverse: comic.orderInUniverse || "",
+      sagaId: comic.saga?.id || "",
+      orderInSaga: comic.orderInSaga || "",
       coverUrl: comic.coverUrl || "",
       officialBuyLink: comic.officialBuyLink || "",
       characters:
@@ -71,8 +79,8 @@ function AdminComics() {
       title: "",
       volume: "1",
       issueNumber: "",
-      universeId: "",
-      orderInUniverse: "",
+      sagaId: "",
+      orderInSaga: "",
       coverUrl: "",
       officialBuyLink: "",
       characters: [],
@@ -118,8 +126,8 @@ function AdminComics() {
         title: form.title,
         volume: Number(form.volume),
         issueNumber: form.issueNumber ? Number(form.issueNumber) : null,
-        universeId: Number(form.universeId),
-        orderInUniverse: Number(form.orderInUniverse),
+        sagaId: Number(form.sagaId),
+        orderInSaga: Number(form.orderInSaga),
         coverUrl: form.coverUrl || null,
         officialBuyLink: form.officialBuyLink || null,
         characters: form.characters
@@ -216,29 +224,27 @@ function AdminComics() {
 
           <div className="form-row">
             <div className="form-group">
-              <label>Universo *</label>
+              <label>Saga *</label>
               <select
-                value={form.universeId}
-                onChange={(e) =>
-                  setForm({ ...form, universeId: e.target.value })
-                }
+                value={form.sagaId}
+                onChange={(e) => setForm({ ...form, sagaId: e.target.value })}
                 required
               >
                 <option value="">Selecione...</option>
-                {universes.map((u) => (
-                  <option key={u.id} value={u.id}>
-                    {u.name}
+                {sagas.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.universeName} — {s.name}
                   </option>
                 ))}
               </select>
             </div>
             <div className="form-group">
-              <label>Ordem na timeline *</label>
+              <label>Ordem na saga *</label>
               <input
                 type="number"
-                value={form.orderInUniverse}
+                value={form.orderInSaga}
                 onChange={(e) =>
-                  setForm({ ...form, orderInUniverse: e.target.value })
+                  setForm({ ...form, orderInSaga: e.target.value })
                 }
                 required
                 placeholder="Ex: 1"
@@ -275,7 +281,6 @@ function AdminComics() {
             />
           </div>
 
-          {/* Personagens */}
           <div className="form-section">
             <div className="form-section-header">
               <label>Personagens</label>
@@ -356,18 +361,18 @@ function AdminComics() {
               {comic.coverUrl ? (
                 <img src={comic.coverUrl} alt={comic.title} />
               ) : (
-                <span>#{comic.orderInUniverse}</span>
+                <span>#{comic.orderInSaga}</span>
               )}
             </div>
             <div className="admin-list-item-info">
               <span className="admin-list-item-label">
-                {comic.universe?.name}
+                {comic.saga?.universe?.name} — {comic.saga?.name}
               </span>
               <h3>{comic.title}</h3>
               <span className="admin-list-item-meta">
                 Vol.{comic.volume}
                 {comic.issueNumber && ` #${comic.issueNumber}`}
-                {` • Ordem ${comic.orderInUniverse}`}
+                {` • Ordem ${comic.orderInSaga}`}
               </span>
             </div>
             <div className="admin-list-item-actions">
