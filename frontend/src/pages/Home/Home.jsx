@@ -16,10 +16,10 @@ function Home() {
             se perca no universo das HQs.
           </p>
           <div className="hero-actions">
-            <Link to="/universes" className="btn-primary">
+            <Link to="/universos" className="btn-primary">
               Explorar Universos
             </Link>
-            <Link to="/characters" className="btn-secondary">
+            <Link to="/personagens" className="btn-secondary">
               Ver Personagens
             </Link>
           </div>
