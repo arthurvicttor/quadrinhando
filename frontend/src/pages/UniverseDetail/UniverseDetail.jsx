@@ -48,7 +48,7 @@ function UniverseDetail() {
             <p className="universe-banner-desc">{universe.description}</p>
             <div className="universe-banner-meta">
               {universe.startYear && <span>Desde {universe.startYear}</span>}
-              <span>{universe._count?.sagas} sagas</span>
+              <span>{sagas.length} sagas</span>
             </div>
           </div>
         </div>
