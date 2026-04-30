@@ -29,20 +29,19 @@ const getSagas = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const { name, description, startYear, companyId } = req.body;
+    const { name, description, startYear, companyId, events } = req.body;
     if (!name || !companyId)
-      return res
-        .status(400)
-        .json({
-          status: "error",
-          message: "name e companyId são obrigatórios.",
-        });
+      return res.status(400).json({
+        status: "error",
+        message: "name e companyId são obrigatórios.",
+      });
 
     const universe = await universeService.create({
       name,
       description,
       startYear: Number(startYear),
       companyId: Number(companyId),
+      events,
     });
     res.status(201).json({ status: "success", data: universe });
   } catch (err) {
@@ -55,12 +54,13 @@ const update = async (req, res, next) => {
     const id = Number(req.params.id);
     if (isNaN(id))
       return res.status(400).json({ status: "error", message: "ID inválido." });
-    const { name, description, startYear, companyId } = req.body;
+    const { name, description, startYear, companyId, events } = req.body;
     const universe = await universeService.update(id, {
       name,
       description,
       startYear: startYear ? Number(startYear) : undefined,
       companyId: companyId ? Number(companyId) : undefined,
+      events,
     });
     res.json({ status: "success", data: universe });
   } catch (err) {
