@@ -6,6 +6,7 @@ const findAll = async () => {
   return prisma.universe.findMany({
     include: {
       company: { select: { id: true, name: true, logoUrl: true } },
+      events: { select: { id: true, name: true } },
       _count: { select: { sagas: true } },
     },
     orderBy: { startYear: "asc" },
