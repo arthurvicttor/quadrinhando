@@ -57,19 +57,41 @@ const findSagasByUniverse = async (slug) => {
   });
 };
 
-const create = async ({ name, description, startYear, companyId }) => {
+const create = async ({ name, description, startYear, companyId, events }) => {
   const company = await prisma.company.findUnique({ where: { id: companyId } });
   if (!company) throw new AppError("Empresa não encontrada.", 404);
 
   const slug = slugify(name);
 
   return prisma.universe.create({
-    data: { name, slug, description, startYear, companyId },
-    include: { company: { select: { id: true, name: true } } },
+    data: {
+      name,
+      slug,
+      description,
+      startYear,
+      companyId,
+      events: events?.length
+        ? {
+            create: events
+              .filter((e) => e.name)
+              .map((e) => ({
+                name: e.name,
+                description: e.description || null,
+              })),
+          }
+        : undefined,
+    },
+    include: {
+      company: { select: { id: true, name: true } },
+      events: true,
+    },
   });
 };
 
-const update = async (id, { name, description, startYear, companyId }) => {
+const update = async (
+  id,
+  { name, description, startYear, companyId, events },
+) => {
   const universe = await prisma.universe.findUnique({ where: { id } });
   if (!universe) throw new AppError("Universo não encontrado.", 404);
 
@@ -82,10 +104,30 @@ const update = async (id, { name, description, startYear, companyId }) => {
 
   const slug = name ? slugify(name) : universe.slug;
 
+  if (events !== undefined) {
+    await prisma.event.deleteMany({ where: { universeId: id } });
+  }
+
   return prisma.universe.update({
     where: { id },
-    data: { name, slug, description, startYear, companyId },
-    include: { company: { select: { id: true, name: true } } },
+    data: {
+      name,
+      slug,
+      description,
+      startYear,
+      companyId,
+      ...(events !== undefined && {
+        events: {
+          create: events
+            .filter((e) => e.name)
+            .map((e) => ({ name: e.name, description: e.description || null })),
+        },
+      }),
+    },
+    include: {
+      company: { select: { id: true, name: true } },
+      events: true,
+    },
   });
 };
 
