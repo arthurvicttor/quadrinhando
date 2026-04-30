@@ -17,6 +17,7 @@ function AdminUniverses() {
     description: "",
     startYear: "",
     companyId: "",
+    events: [],
   });
 
   useEffect(() => {
@@ -45,6 +46,12 @@ function AdminUniverses() {
       description: universe.description || "",
       startYear: universe.startYear || "",
       companyId: universe.company?.id || "",
+      events:
+        universe.events?.map((e) => ({
+          id: e.id,
+          name: e.name,
+          description: e.description || "",
+        })) || [],
     });
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -52,7 +59,13 @@ function AdminUniverses() {
 
   const handleNew = () => {
     setEditing(null);
-    setForm({ name: "", description: "", startYear: "", companyId: "" });
+    setForm({
+      name: "",
+      description: "",
+      startYear: "",
+      companyId: "",
+      events: [],
+    });
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -60,7 +73,13 @@ function AdminUniverses() {
   const handleCancel = () => {
     setShowForm(false);
     setEditing(null);
-    setForm({ name: "", description: "", startYear: "", companyId: "" });
+    setForm({
+      name: "",
+      description: "",
+      startYear: "",
+      companyId: "",
+      events: [],
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -97,6 +116,26 @@ function AdminUniverses() {
     } catch (err) {
       setError(err.response?.data?.message || "Erro ao excluir universo.");
     }
+  };
+
+  const handleAddEvent = () => {
+    setForm({
+      ...form,
+      events: [...form.events, { name: "" }],
+    });
+  };
+
+  const handleRemoveEvent = (index) => {
+    setForm({
+      ...form,
+      events: form.events.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleEventChange = (index, value) => {
+    const updated = [...form.events];
+    updated[index] = { ...updated[index], name: value };
+    setForm({ ...form, events: updated });
   };
 
   if (loading) return <Loading text="Carregando universos..." />;
@@ -145,6 +184,40 @@ function AdminUniverses() {
               rows={3}
             />
           </div>
+
+          <div className="form-section-header">
+            <label>Eventos</label>
+            <button
+              type="button"
+              className="btn-add-character"
+              onClick={handleAddEvent}
+            >
+              + Adicionar
+            </button>
+          </div>
+
+          {form.events.length === 0 && (
+            <p className="form-empty">Nenhum evento adicionado.</p>
+          )}
+
+          {form.events.map((event, index) => (
+            <div key={index} className="character-row">
+              <input
+                type="text"
+                value={event.name}
+                onChange={(e) => handleEventChange(index, e.target.value)}
+                placeholder="Nome do evento"
+                style={{ flex: 1 }}
+              />
+              <button
+                type="button"
+                className="btn-remove-character"
+                onClick={() => handleRemoveEvent(index)}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
 
           <div className="form-row">
             <div className="form-group">
