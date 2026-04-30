@@ -49,8 +49,9 @@ function ComicDetail() {
             <h1 className="comic-banner-title">{comic.title}</h1>
             <div className="comic-banner-meta">
               {comic.volume && <span>Volume {comic.volume}</span>}
-              {comic.issueNumber && <span>#{comic.issueNumber}</span>}
-              <span>Nº {comic.orderInUniverse} na timeline</span>
+              {comic.issueNumber && (
+                <span>Número da Edição: #{comic.issueNumber}</span>
+              )}
             </div>
 
             {comic.officialBuyLink && (
