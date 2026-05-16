@@ -15,6 +15,7 @@ import AdminCharacters from "./pages/Admin/Characters/AdminCharacters";
 import AdminComics from "./pages/Admin/Comics/AdminComics";
 import AdminSagas from "./pages/Admin/Sagas/AdminSagas";
 import Footer from "./components/Footer/Footer";
+import NotFound from "./pages/NotFound/NotFound";
 import "./App.css";
 
 function App() {
@@ -76,6 +77,7 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
