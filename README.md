@@ -240,4 +240,4 @@ npm run preview  # Visualizar build
 
 ## Licenca
 
-MIT
+Arthur Victor de Sá Rodrigues
